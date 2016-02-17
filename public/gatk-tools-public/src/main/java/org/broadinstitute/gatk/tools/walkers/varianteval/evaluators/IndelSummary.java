@@ -137,7 +137,17 @@ public class IndelSummary extends VariantEvaluator implements StandardEval {
     @DataPoint(description = "Het to hom ratio for indels")
     public String indel_het_to_hom_ratio;
     
-    int nSNPHets = 0, nSNPHoms = 0, nIndelHets = 0, nIndelHoms = 0;
+    @DataPoint(description = "Number of SNP Heterozygous")
+    public int nSNPHets = 0;
+
+    @DataPoint(description = "Number of SNP Homozygous")
+    public int nSNPHoms = 0;
+
+    @DataPoint(description = "Number of Indel Heterozygous")
+    public int nIndelHets = 0;
+
+    @DataPoint(description = "Number of Indel Homozygous")
+    public int nIndelHoms = 0;
 
     int[] insertionCountByLength = new int[]{0, 0, 0, 0}; // note that the first element isn't used
     int[] deletionCountByLength = new int[]{0, 0, 0, 0}; // note that the first element isn't used
