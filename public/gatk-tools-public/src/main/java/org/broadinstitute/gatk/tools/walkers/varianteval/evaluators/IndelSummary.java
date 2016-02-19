@@ -150,6 +150,24 @@ public class IndelSummary extends VariantEvaluator implements StandardEval {
     @DataPoint(description = "Number of Indel Homozygous")
     public int nIndelHoms = 0;
 
+    @DataPoint(description = "Insertion Count By Length 1")
+    public int nInsertionLength_1_bp;
+
+    @DataPoint(description = "Insertion Count By Length 2")
+    public int nInsertionLength_2_bp;
+
+    @DataPoint(description = "Insertion Count By Length 3")
+    public int nInsertionLength_3_bp;
+
+    @DataPoint(description = "Deletion Count By Length 1")
+    public int nDeletionLength_1_bp;
+
+    @DataPoint(description = "Deletion Count By Length 2")
+    public int nDeletionLength_2_bp;
+
+    @DataPoint(description = "Deletion Count By Length 3")
+    public int nDeletionLength_3_bp;
+
     int[] insertionCountByLength = new int[]{0, 0, 0, 0}; // note that the first element isn't used
     int[] deletionCountByLength = new int[]{0, 0, 0, 0}; // note that the first element isn't used
 
@@ -257,7 +275,14 @@ public class IndelSummary extends VariantEvaluator implements StandardEval {
         indel_novelty_rate = Utils.formattedNoveltyRate(n_indels - n_novel_indels, n_indels);
         frameshift_rate_for_coding_indels = Utils.formattedPercent(n_coding_indels_frameshifting, n_coding_indels_in_frame + n_coding_indels_frameshifting);
 
+        nDeletionLength_1_bp = deletionCountByLength[1];
+        nDeletionLength_2_bp = deletionCountByLength[2];
+        nDeletionLength_3_bp = deletionCountByLength[3];
         ratio_of_1_and_2_to_3_bp_deletions = Utils.formattedRatio(deletionCountByLength[1] + deletionCountByLength[2], deletionCountByLength[3]);
+
+        nInsertionLength_1_bp = insertionCountByLength[1];
+        nInsertionLength_2_bp = insertionCountByLength[2];
+        nInsertionLength_3_bp = insertionCountByLength[3];
         ratio_of_1_and_2_to_3_bp_insertions = Utils.formattedRatio(insertionCountByLength[1] + insertionCountByLength[2], insertionCountByLength[3]);
 
         SNP_het_to_hom_ratio = Utils.formattedRatio(nSNPHets, nSNPHoms);
