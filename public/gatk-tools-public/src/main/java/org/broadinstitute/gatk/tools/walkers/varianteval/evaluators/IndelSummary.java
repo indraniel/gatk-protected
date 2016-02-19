@@ -69,6 +69,7 @@ public class IndelSummary extends VariantEvaluator implements StandardEval {
     // multi-allelics
     //
     // Number of Indels Sites (counts one for any number of alleles at site)
+    @DataPoint(description = "Number of Indels Sites [counts one for any number of alleles at site]")
     public int nIndelSites = 0;
 
     @DataPoint(description = "Number of sites with where the number of alleles is greater than 2")
