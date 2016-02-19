@@ -69,7 +69,7 @@ public class IndelSummary extends VariantEvaluator implements StandardEval {
     // multi-allelics
     //
     // Number of Indels Sites (counts one for any number of alleles at site)
-    @DataPoint(description = "Number of Indels Sites [counts one for any number of alleles at site]")
+    @DataPoint(description = "Number of Indels Sites [counts one for any number of alleles at site]", format = "%d")
     public int nIndelSites = 0;
 
     @DataPoint(description = "Number of sites with where the number of alleles is greater than 2")
@@ -138,34 +138,34 @@ public class IndelSummary extends VariantEvaluator implements StandardEval {
     @DataPoint(description = "Het to hom ratio for indels")
     public String indel_het_to_hom_ratio;
     
-    @DataPoint(description = "Number of SNP Heterozygous")
+    @DataPoint(description = "Number of SNP Heterozygous", format = "%d")
     public int nSNPHets = 0;
 
-    @DataPoint(description = "Number of SNP Homozygous")
+    @DataPoint(description = "Number of SNP Homozygous", format = "%d")
     public int nSNPHoms = 0;
 
-    @DataPoint(description = "Number of Indel Heterozygous")
+    @DataPoint(description = "Number of Indel Heterozygous", format = "%d")
     public int nIndelHets = 0;
 
-    @DataPoint(description = "Number of Indel Homozygous")
+    @DataPoint(description = "Number of Indel Homozygous", format = "%d")
     public int nIndelHoms = 0;
 
-    @DataPoint(description = "Insertion Count By Length 1")
+    @DataPoint(description = "Insertion Count By Length 1", format = "%d")
     public int nInsertionLength_1_bp;
 
-    @DataPoint(description = "Insertion Count By Length 2")
+    @DataPoint(description = "Insertion Count By Length 2", format = "%d")
     public int nInsertionLength_2_bp;
 
-    @DataPoint(description = "Insertion Count By Length 3")
+    @DataPoint(description = "Insertion Count By Length 3", format = "%d")
     public int nInsertionLength_3_bp;
 
-    @DataPoint(description = "Deletion Count By Length 1")
+    @DataPoint(description = "Deletion Count By Length 1", format = "%d")
     public int nDeletionLength_1_bp;
 
-    @DataPoint(description = "Deletion Count By Length 2")
+    @DataPoint(description = "Deletion Count By Length 2", format = "%d")
     public int nDeletionLength_2_bp;
 
-    @DataPoint(description = "Deletion Count By Length 3")
+    @DataPoint(description = "Deletion Count By Length 3", format = "%d")
     public int nDeletionLength_3_bp;
 
     int[] insertionCountByLength = new int[]{0, 0, 0, 0}; // note that the first element isn't used
