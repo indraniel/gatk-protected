@@ -71,29 +71,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
 
         for (VariantContext vc : vcs) {
             nProcessedLoci++;
-
-            switch ( vc.getType() ) {
-                case SNP:
-                    nSNPs++;
-                    recordSNP(vc);
-                    break;
-                case MNP:
-                    nMNPs++;
-                    break;
-                case INDEL:
-                    recordINDEL(vc);
-                    break;
-                case MIXED:
-                    nMixed++;
-                    break;
-                case SYMBOLIC:
-                    nSymbolic++;
-                    break;
-                case NO_VARIATION:
-                    throw new ReviewedGATKException("Unexpected Variant type " + vc.getType() + "shouldn't get here!");
-                default:
-                    throw new ReviewedGATKException("Unexpected VariantContext type " + vc.getType());
-            }
+            processVariantSite(vc);
         }
 
         return null;
@@ -181,6 +159,33 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
         }
 
         return stream;
+    }
+
+    public void processVariantSite(VariantContext vc) {
+        // for now, we're going to assume that the VCF file has already been decomposed
+        // and normalized, making everything biallelic
+        switch ( vc.getType() ) {
+            case SNP:
+                nSNPs++;
+                recordSNP(vc);
+                break;
+            case MNP:
+                nMNPs++;
+                break;
+            case INDEL:
+                recordINDEL(vc);
+                break;
+            case MIXED:
+                nMixed++;
+                break;
+            case SYMBOLIC:
+                nSymbolic++;
+                break;
+            case NO_VARIATION:
+                throw new ReviewedGATKException("Unexpected Variant type " + vc.getType() + "shouldn't get here!");
+            default:
+                throw new ReviewedGATKException("Unexpected VariantContext type " + vc.getType());
+        }
     }
 
     public void recordSNP(VariantContext vc) {
