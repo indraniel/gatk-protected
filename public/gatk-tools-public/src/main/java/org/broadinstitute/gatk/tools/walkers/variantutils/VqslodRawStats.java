@@ -53,6 +53,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
     private Integer nMNPs;
     private Integer nMixed;
     private Integer nSymbolic;
+    private Integer nNoVariation;
 
 
 
@@ -111,6 +112,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
         nMNPs = 0;
         nMixed = 0;
         nSymbolic = 0;
+        nNoVariation = 0;
 
         // initialize file streams
         snpStream = openStream(snpsFile);
@@ -182,12 +184,14 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
                 nSymbolic++;
                 break;
             case NO_VARIATION:
-                String ref = vc.getReference().getDisplayString();
-                String alt = vc.getAlternateAllele(0).toString();
-                int pos = vc.getStart();
-                String msg = String.format("(REF: %s | ALT: %s | POS: %d)", ref, alt, pos);
-                out.println("Unexpected Variant type " + vc.getType() + "shouldn't get here! " + msg);
+                //String ref = vc.getReference().getDisplayString();
+                //int size = vc.getAlternateAlleles().size();
+                //int pos = vc.getStart();
+                //String msg = String.format("(REF: %s | ALTSIZE: %d | POS: %d)", ref, size, pos);
+                //out.println("Unexpected Variant type " + vc.getType() + " shouldn't get here! " + msg);
                 //throw new ReviewedGATKException("Unexpected Variant type " + vc.getType() + "shouldn't get here! " + msg);
+                nNoVariation++;
+                break;
             default:
                 throw new ReviewedGATKException("Unexpected VariantContext type " + vc.getType());
         }
