@@ -186,12 +186,6 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
                 nSymbolic++;
                 break;
             case NO_VARIATION:
-                //String ref = vc.getReference().getDisplayString();
-                //int size = vc.getAlternateAlleles().size();
-                //int pos = vc.getStart();
-                //String msg = String.format("(REF: %s | ALTSIZE: %d | POS: %d)", ref, size, pos);
-                //out.println("Unexpected Variant type " + vc.getType() + " shouldn't get here! " + msg);
-                //throw new ReviewedGATKException("Unexpected Variant type " + vc.getType() + "shouldn't get here! " + msg);
                 nNoVariation++;
                 break;
             default:
