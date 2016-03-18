@@ -182,7 +182,12 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
                 nSymbolic++;
                 break;
             case NO_VARIATION:
-                throw new ReviewedGATKException("Unexpected Variant type " + vc.getType() + "shouldn't get here!");
+                String ref = vc.getReference().getDisplayString();
+                String alt = vc.getAlternateAllele(0).toString();
+                int pos = vc.getStart();
+                String msg = String.format("(REF: %s | ALT: %s | POS: %d)", ref, alt, pos);
+                out.println("Unexpected Variant type " + vc.getType() + "shouldn't get here! " + msg);
+                //throw new ReviewedGATKException("Unexpected Variant type " + vc.getType() + "shouldn't get here! " + msg);
             default:
                 throw new ReviewedGATKException("Unexpected VariantContext type " + vc.getType());
         }
