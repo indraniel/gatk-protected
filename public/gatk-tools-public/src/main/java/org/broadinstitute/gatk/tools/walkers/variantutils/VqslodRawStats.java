@@ -91,12 +91,14 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
     public void onTraversalDone(Integer sum) {
         out.println("Processed " + nProcessedLoci + " variants.");
         out.println("\t SNPs: " + nSNPs);
-        out.println("\t (INDEL) Simple Insertions: " + nInsertions);
-        out.println("\t (INDEL) Simple Deletions: " + nDeletions);
-        out.println("\t (INDEL) Complex INDEL: " + nComplex);
+        out.println("\t INDELs: " + (nInsertions + nDeletions + nComplex));
+        out.println("\t\t (INDEL) Simple Insertions: " + nInsertions);
+        out.println("\t\t (INDEL) Simple Deletions: " + nDeletions);
+        out.println("\t\t (INDEL) Complex: " + nComplex);
         out.println("\t MNPs: " + nMNPs);
         out.println("\t Mixed: " + nMixed);
         out.println("\t Symbolic: " + nSymbolic);
+        out.println("\t No Variation: " + nNoVariation);
 
         snpStream.close();
         indelStream.close();
