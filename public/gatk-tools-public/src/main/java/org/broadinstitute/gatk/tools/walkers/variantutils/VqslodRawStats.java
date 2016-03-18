@@ -241,15 +241,15 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
         String indelType = null;
 
         if (vc.isSimpleInsertion()) {
-            indelType = "s-ins";
+            indelType = "I";
             nInsertions++;
         }
         else if (vc.isSimpleDeletion()) {
-            indelType = "s-del";
+            indelType = "D";
             nDeletions++;
         }
         else {
-            indelType = "cmplx";
+            indelType = "C";
             nComplex++;
         }
 
