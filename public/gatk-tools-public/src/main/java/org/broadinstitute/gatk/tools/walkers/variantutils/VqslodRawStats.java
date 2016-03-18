@@ -201,6 +201,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
         }
 
         String site_filter = getVariantFilterString(vc);
+        String vqslod = getVQSLODString(vc);
 
         String[] row = new String[] {
                 vc.getContig(),
@@ -209,7 +210,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
                 vc.getReference().getDisplayString(),
                 vc.getAlternateAllele(0).toString(),
                 site_filter,
-                vc.getAttribute("VQSLOD").toString(),
+                vqslod,
                 String.format("%d", transition),
                 String.format("%d", transversion)
         };
@@ -221,6 +222,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
         String indelType = deriveIndelType(vc);
         int indelLength = calculateIndelLength(vc);
         String site_filter = getVariantFilterString(vc);
+        String vqslod = getVQSLODString(vc);
 
         String[] row = new String[] {
                 vc.getContig(),
@@ -229,7 +231,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
                 vc.getReference().getDisplayString(),
                 vc.getAlternateAllele(0).toString(),
                 site_filter,
-                vc.getAttribute("VQSLOD").toString(),
+                vqslod,
                 indelType,
                 String.format("%d", indelLength)
         };
@@ -284,5 +286,18 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
         }
 
         return site_filter;
+    }
+
+    public String getVQSLODString(VariantContext vc) {
+        String vqslod = null;
+
+        if ( vc.hasAttribute("VQSLOD") ) {
+            vqslod = vc.getAttribute("VQSLOD").toString();
+        }
+        else {
+            vqslod = "NA";
+        }
+
+        return vqslod;
     }
 }
