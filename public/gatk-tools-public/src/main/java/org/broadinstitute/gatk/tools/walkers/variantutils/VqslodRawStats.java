@@ -200,15 +200,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
             transversion = 1;
         }
 
-        String site_filter;
-        if ( vc.getFilters().isEmpty() ) {
-            site_filter = "PASS";
-        }
-        else {
-            int numElements = vc.getFilters().size();
-            String[] site_filters = vc.getFilters().toArray(new String[numElements]);
-            site_filter = site_filters[0];
-        }
+        String site_filter = getVariantFilterString(vc);
 
         String[] row = new String[] {
                 vc.getContig(),
@@ -228,6 +220,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
     public void recordINDEL(VariantContext vc) {
         String indelType = deriveIndelType(vc);
         int indelLength = calculateIndelLength(vc);
+        String site_filter = getVariantFilterString(vc);
 
         String[] row = new String[] {
                 vc.getContig(),
@@ -235,7 +228,7 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
                 vc.getID(),
                 vc.getReference().getDisplayString(),
                 vc.getAlternateAllele(0).toString(),
-                vc.getFilters().toString(),
+                site_filter,
                 vc.getAttribute("VQSLOD").toString(),
                 indelType,
                 String.format("%d", indelLength)
@@ -276,5 +269,20 @@ public class VqslodRawStats extends RodWalker<Integer, Integer> {
         );
 
         return alleleSize;
+    }
+
+    public String getVariantFilterString(VariantContext vc) {
+        String site_filter;
+
+        if ( vc.getFilters().isEmpty() ) {
+            site_filter = "PASS";
+        }
+        else {
+            int numElements = vc.getFilters().size();
+            String[] site_filters = vc.getFilters().toArray(new String[numElements]);
+            site_filter = site_filters[0];
+        }
+
+        return site_filter;
     }
 }
