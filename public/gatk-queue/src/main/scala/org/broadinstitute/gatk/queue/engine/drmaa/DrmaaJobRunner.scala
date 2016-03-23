@@ -84,6 +84,7 @@ class DrmaaJobRunner(val session: Session, val function: CommandLineFunction) ex
       try {
         Retry.attempt(() => {
           try {
+            println("[MGI] Gonna submit an LSF job dude!")
             jobId = session.runJob(drmaaJob)
           } catch {
             case de: DrmaaException => throw new QException("Unable to submit job: " + de.getLocalizedMessage)

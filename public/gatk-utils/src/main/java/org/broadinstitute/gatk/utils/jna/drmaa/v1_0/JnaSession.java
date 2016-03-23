@@ -74,9 +74,13 @@ public class JnaSession implements Session {
 
     @Override
     public String runJob(JobTemplate jobTemplate) throws DrmaaException {
+        System.out.println("[MGI] Entered runJob dude");
         Memory jobId = new Memory(LibDrmaa.DRMAA_JOBNAME_BUFFER);
+        System.out.println("[MGI] Got a Memory object dude");
         JnaJobTemplate jnaJobTemplate = (JnaJobTemplate) jobTemplate;
+        System.out.println("[MGI] Got a JnaJobTemplate object dude");
         checkError(LibDrmaa.drmaa_run_job(jobId, LibDrmaa.DRMAA_JOBNAME_BUFFER_LEN, jnaJobTemplate.getPointer(), getError(), LibDrmaa.DRMAA_ERROR_STRING_BUFFER_LEN));
+        System.out.println("[MGI] Got past checkError dude");
         return jobId.getString(0);
     }
 
