@@ -79,8 +79,7 @@ public class JnaSession implements Session {
         System.out.println("[MGI] Got a Memory object dude");
         System.out.println("[MGI] --- jobTemplate object looks like: ---");
         System.out.println("\t[1] : " + String.join("\n", jobTemplate.getArgs()));
-        System.out.println("\t[2] : " + jobTemplate.getBlockEmail().toString());
-        System.out.println("\t[3] : " + jobTemplate.getDeadlineTime().toString());
+        System.out.println("\t[2] : " + jobTemplate.getBlockEmail());
         System.out.println("\t[4] : " + String.join("\n", jobTemplate.getEmail()));
         System.out.println("\t[5] : " + jobTemplate.getErrorPath());
         System.out.println("\t[6] : " + jobTemplate.getHardRunDurationLimit());
@@ -88,7 +87,7 @@ public class JnaSession implements Session {
         System.out.println("\t[8] : " + jobTemplate.getInputPath());
         System.out.println("\t[9] : " + jobTemplate.getJobCategory());
         System.out.println("\t[10]: " + jobTemplate.getJobName());
-        System.out.println("\t[11]: " + jobTemplate.getJoinFiles().toString());
+        System.out.println("\t[11]: " + jobTemplate.getJoinFiles());
         System.out.println("\t[12]: " + jobTemplate.getNativeSpecification());
         System.out.println("\t[13]: " + jobTemplate.getOutputPath());
         System.out.println("\t[14]: " + jobTemplate.getRemoteCommand());
