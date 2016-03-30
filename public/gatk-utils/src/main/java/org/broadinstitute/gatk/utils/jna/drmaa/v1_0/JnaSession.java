@@ -77,6 +77,9 @@ public class JnaSession implements Session {
         System.out.println("[MGI] Entered runJob dude");
         Memory jobId = new Memory(LibDrmaa.DRMAA_JOBNAME_BUFFER);
         System.out.println("[MGI] Got a Memory object dude");
+        System.out.println("[MGI] jobTemplate object looks like:");
+        System.out.println(jobTemplate.toString());
+        System.out.println("[MGI] End of jobTemplate object dump.");
         JnaJobTemplate jnaJobTemplate = (JnaJobTemplate) jobTemplate;
         System.out.println("[MGI] Got a JnaJobTemplate object dude");
         checkError(LibDrmaa.drmaa_run_job(jobId, LibDrmaa.DRMAA_JOBNAME_BUFFER_LEN, jnaJobTemplate.getPointer(), getError(), LibDrmaa.DRMAA_ERROR_STRING_BUFFER_LEN));
