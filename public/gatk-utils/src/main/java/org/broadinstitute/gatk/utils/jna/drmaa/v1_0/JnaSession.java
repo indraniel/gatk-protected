@@ -82,8 +82,6 @@ public class JnaSession implements Session {
         System.out.println("\t[2] : " + jobTemplate.getBlockEmail());
         System.out.println("\t[4] : " + String.join("\n", jobTemplate.getEmail()));
         System.out.println("\t[5] : " + jobTemplate.getErrorPath());
-        System.out.format("\t[6] : %d", jobTemplate.getHardRunDurationLimit());
-        System.out.format("\t[7] : %d", jobTemplate.getHardWallclockTimeLimit());
         System.out.println("\t[8] : " + jobTemplate.getInputPath());
         System.out.println("\t[9] : " + jobTemplate.getJobCategory());
         System.out.println("\t[10]: " + jobTemplate.getJobName());
@@ -91,8 +89,6 @@ public class JnaSession implements Session {
         System.out.println("\t[12]: " + jobTemplate.getNativeSpecification());
         System.out.println("\t[13]: " + jobTemplate.getOutputPath());
         System.out.println("\t[14]: " + jobTemplate.getRemoteCommand());
-        System.out.format("\t[15]: %d", jobTemplate.getSoftRunDurationLimit());
-        System.out.format("\t[16]: %d", jobTemplate.getSoftWallclockTimeLimit());
         System.out.println("\t[17]: " + jobTemplate.getWorkingDirectory());
         System.out.println("[MGI] --- End of jobTemplate object dump. ---");
         JnaJobTemplate jnaJobTemplate = (JnaJobTemplate) jobTemplate;
