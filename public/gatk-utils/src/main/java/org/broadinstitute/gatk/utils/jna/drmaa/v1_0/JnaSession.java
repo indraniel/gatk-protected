@@ -60,7 +60,7 @@ public class JnaSession implements Session {
     }
 
     @Override
-    public JobTemplate createJobTemplate() throws DrmaaException {
+    public synchronized JobTemplate createJobTemplate() throws DrmaaException {
         PointerByReference jtRef = new PointerByReference();
         checkError(LibDrmaa.drmaa_allocate_job_template(jtRef, getError(), LibDrmaa.DRMAA_ERROR_STRING_BUFFER_LEN));
         return new JnaJobTemplate(this, jtRef.getValue());

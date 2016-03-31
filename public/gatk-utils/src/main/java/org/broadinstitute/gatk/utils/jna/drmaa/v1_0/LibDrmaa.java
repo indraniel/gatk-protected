@@ -446,7 +446,7 @@ public static native int drmaa_get_vector_attribute_names(/* drmaa_attr_names_t 
  *    DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE or
  *    DRMAA_ERRNO_AUTH_FAILURE.
  */
-public static native int drmaa_run_job(Pointer job_id, NativeLong job_id_len,
+public synchronized static native int drmaa_run_job(Pointer job_id, NativeLong job_id_len,
                   /* drmaa_job_template_t * */ Pointer jt, Pointer error_diagnosis,
                   NativeLong error_diag_len);
 
