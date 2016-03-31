@@ -75,6 +75,11 @@ public class JnaSession implements Session {
     @Override
     public synchronized String runJob(JobTemplate jobTemplate) throws DrmaaException {
         System.out.println("[MGI] Entered runJob dude");
+        try {
+            Thread.sleep(5000);
+        } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+        }
         Memory jobId = new Memory(LibDrmaa.DRMAA_JOBNAME_BUFFER);
         System.out.println("[MGI] Got a Memory object dude");
         System.out.println("[MGI] --- jobTemplate object looks like: ---");
@@ -93,7 +98,17 @@ public class JnaSession implements Session {
         System.out.println("[MGI] --- End of jobTemplate object dump. ---");
         JnaJobTemplate jnaJobTemplate = (JnaJobTemplate) jobTemplate;
         System.out.println("[MGI] Got a JnaJobTemplate object dude");
+        try {
+            Thread.sleep(5000);
+        } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+        }
         checkError(LibDrmaa.drmaa_run_job(jobId, LibDrmaa.DRMAA_JOBNAME_BUFFER_LEN, jnaJobTemplate.getPointer(), getError(), LibDrmaa.DRMAA_ERROR_STRING_BUFFER_LEN));
+        try {
+            Thread.sleep(5000);
+        } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+        }
         System.out.println("[MGI] Got past checkError dude");
         return jobId.getString(0);
     }
