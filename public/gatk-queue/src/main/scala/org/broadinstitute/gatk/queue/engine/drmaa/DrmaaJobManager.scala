@@ -34,6 +34,7 @@ import org.ggf.drmaa.Session
  * Runs jobs using DRMAA
  */
 class DrmaaJobManager extends CommandLineJobManager[DrmaaJobRunner] {
+  @volatile
   protected var session: Session = _
 
   protected def newSession() = new JnaSessionFactory().getSession
