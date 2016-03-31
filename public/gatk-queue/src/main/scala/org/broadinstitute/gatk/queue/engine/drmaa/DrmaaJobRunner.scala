@@ -82,14 +82,10 @@ class DrmaaJobRunner(val session: Session, val function: CommandLineFunction) ex
 
       // Start the job and store the id so it can be killed in tryStop
       try {
-        Retry.attempt(() => {
-          try {
             println("[MGI] Gonna submit an LSF job dude!")
             jobId = session.runJob(drmaaJob)
-          } catch {
+      } catch {
             case de: DrmaaException => throw new QException("Unable to submit job: " + de.getLocalizedMessage)
-          }
-        }, 1, 5, 10)
       } finally {
         // Prevent memory leaks
         session.deleteJobTemplate(drmaaJob)
