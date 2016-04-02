@@ -49,7 +49,7 @@ class DrmaaJobRunner(val session: Session, val function: CommandLineFunction) ex
   def start() {
     session.synchronized {
       @volatile
-      val drmaaJob: JobTemplate = session.createJobTemplate
+      var drmaaJob: JobTemplate = session.createJobTemplate
 
       drmaaJob.setJobName(function.jobRunnerJobName.take(jobNameLength).replaceAll(jobNameFilter, "_"))
 
