@@ -116,7 +116,13 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
         val jobStatus = session.getJobProgramStatus(jobId);
         jobStatus match {
           case Session.QUEUED_ACTIVE => returnStatus = RunnerStatus.RUNNING
-          case Session.DONE => returnStatus = RunnerStatus.DONE
+          case Session.DONE =>
+            val lsfStatus = getLSFCacheJobStatus(jobId)
+            lsfStatus match {
+              case "DONE" => returnStatus = RunnerStatus.DONE
+              case "EXIT" => returnStatus = RunnerStatus.FAILED
+              case _ => returnStatus = RunnerStatus.FAILED  /* when in an unknown state, just fail */
+            }
           case Session.FAILED => returnStatus = RunnerStatus.FAILED
           case Session.UNDETERMINED => logger.warn("Unable to determine status of job id " + jobId)
           case _ => returnStatus = RunnerStatus.RUNNING
@@ -157,6 +163,18 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
         }
       }
     }
+  }
+
+  def getLSFCacheJobStatus(jobID: String): String = {
+    (exitValue, stdOut, stdErr) = bjobs(jobID)
+    var status: String = _
+    if (stdErr != "") {
+      logger.info("LSF Job: %s -- status not in LSF cache".format(jobID))
+      status = "unknown"
+    } else {
+      status = stdOut.toString.split("\n")(1).split("\\s+")(2)
+    }
+    status
   }
 
   def bjobs(jobID: String): (Int, String, String) = {
