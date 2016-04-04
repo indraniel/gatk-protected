@@ -43,6 +43,10 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
   var jobId: String = _
   override def jobIdString = jobId
 
+  // Don't cleanup for now
+  override def cleanup() {
+  }
+
   // Set the display name to < 512 characters of the description
   // NOTE: Not sure if this is configuration specific?
   protected val jobNameLength = 500
