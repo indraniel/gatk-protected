@@ -98,7 +98,8 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
 
         // store the id so it can be killed in tryStop
         val regex = "Job <([0-9]+)> .+".r
-        val regex(jobNum) = stdOut
+        val regex(jobNum) = stdOut.trim()
+        logger.info("jobNum is: " + jobId)
         jobId = jobNum
 
         logger.info("Submitted job id: " + jobId)
