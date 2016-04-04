@@ -159,15 +159,25 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
     }
   }
 
+  def bjobs(jobID: String): (Int, String, String) = {
+    val bjobsCmd = Array("bjobs", jobID).mkString(" ")
+    logger.info("(bjobs): %s".format(bjobsCmd))
+    (exitValue, stdOut, stdErr) = runCmd(bjobsCmd)
+    (exitValue, stdOut.trim(), stdErr.trim())
+  }
+
   def bsub(cmd: String): (Int, String, String) = {
     val bsubCmd = Array("bsub", functionNativeSpec(), cmd).mkString(" ")
-    logger.info("Full bsub command is: %s".format(bsubCmd))
+    logger.info("(bsub): %s".format(bsubCmd))
+    (exitValue, stdOut, stdErr) = runCmd(bsubCmd)
+  }
+
+  def runCmd(cmd: String): (Int, String, String) = {
     val stdout = new ByteArrayOutputStream
     val stderr = new ByteArrayOutputStream
     val stdoutWriter = new PrintWriter(stdout)
     val stderrWriter = new PrintWriter(stderr)
-    logger.info("Executing bsub command")
-    val exitValue = bsubCmd.!(ProcessLogger(stdoutWriter.println, stderrWriter.println))
+    val exitValue = cmd.!(ProcessLogger(stdoutWriter.println, stderrWriter.println))
     stdoutWriter.close()
     stderrWriter.close()
     (exitValue, stdout.toString, stderr.toString)
