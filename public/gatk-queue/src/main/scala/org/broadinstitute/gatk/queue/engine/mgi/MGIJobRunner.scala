@@ -117,26 +117,7 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
         val jobStatus = session.getJobProgramStatus(jobId);
         jobStatus match {
           case Session.QUEUED_ACTIVE => returnStatus = RunnerStatus.RUNNING
-          case Session.DONE =>
-            val jobInfo: JobInfo = session.wait(jobId, Session.TIMEOUT_NO_WAIT)
-
-            // Update jobInfo
-            def convertDRMAATime(key: String): Date = {
-              val v = jobInfo.getResourceUsage.get(key)
-              if ( v != null ) new Date(v.toString.toDouble.toLong * 1000) else null;
-            }
-            if ( jobInfo.getResourceUsage != null ) {
-              getRunInfo.startTime = convertDRMAATime("start_time")
-              getRunInfo.doneTime = convertDRMAATime("end_time")
-              getRunInfo.exechosts = "unknown"
-            }
-
-            if ((jobInfo.hasExited && jobInfo.getExitStatus != 0)
-                || jobInfo.hasSignaled
-                || jobInfo.wasAborted)
-              returnStatus = RunnerStatus.FAILED
-            else
-              returnStatus = RunnerStatus.DONE
+          case Session.DONE => returnStatus = RunnerStatus.DONE
           case Session.FAILED => returnStatus = RunnerStatus.FAILED
           case Session.UNDETERMINED => logger.warn("Unable to determine status of job id " + jobId)
           case _ => returnStatus = RunnerStatus.RUNNING
