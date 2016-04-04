@@ -166,8 +166,8 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
   }
 
   def getLSFCacheJobStatus(jobID: String): String = {
-    (exitValue, stdOut, stdErr) = bjobs(jobID)
-    var status: String = _
+    val (exitValue, stdOut, stdErr) = bjobs(jobID)
+    var status: String = ""
     if (stdErr != "") {
       logger.info("LSF Job: %s -- status not in LSF cache".format(jobID))
       status = "unknown"
@@ -180,14 +180,15 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
   def bjobs(jobID: String): (Int, String, String) = {
     val bjobsCmd = Array("bjobs", jobID).mkString(" ")
     logger.info("(bjobs): %s".format(bjobsCmd))
-    (exitValue, stdOut, stdErr) = runCmd(bjobsCmd)
+    val (exitValue, stdOut, stdErr) = runCmd(bjobsCmd)
     (exitValue, stdOut.trim(), stdErr.trim())
   }
 
   def bsub(cmd: String): (Int, String, String) = {
     val bsubCmd = Array("bsub", functionNativeSpec(), cmd).mkString(" ")
     logger.info("(bsub): %s".format(bsubCmd))
-    (exitValue, stdOut, stdErr) = runCmd(bsubCmd)
+    val (exitValue, stdOut, stdErr) = runCmd(bsubCmd)
+    (exitValue, stdOut, stdErr)
   }
 
   def runCmd(cmd: String): (Int, String, String) = {
