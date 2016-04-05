@@ -75,9 +75,10 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
       nativeSpec += " -eo " + function.jobErrorFile.getPath
 
     // Override any command line given jobNativeArgs
-    (nativeSpec + " " + function.jobNativeArgs.mkString(" ")).trim()
-    logger.info("Native spec is: %s".format(nativeSpec))
+    nativeSpec += " " + function.jobNativeArgs.mkString(" ")
 
+    nativeSpec = nativeSpec.trim()
+    logger.info("Native spec is: %s".format(nativeSpec))
     nativeSpec
   }
 
