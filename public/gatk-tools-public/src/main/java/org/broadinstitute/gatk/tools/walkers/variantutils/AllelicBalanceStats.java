@@ -34,6 +34,9 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
     @Input(fullName="snps-file", shortName = "SNP", doc="The file name to hold the SNP data", required=true)
     protected String snpsFile;
 
+    @Input(fullName="vqslod-threshold", shortName = "vt", doc="VQSLOD threshold (only variants geq threshold will be chosen)", required=true)
+    protected double vqslodThreshold;
+
     // file streams
     PrintStream snpStream = null;
 
@@ -42,6 +45,7 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
 
     // number of SNP variants counter
     private Integer nSNPs;
+    private Integer passedSNPs;
 
     // number of INDEL variants counter
     private Integer nInsertions;
@@ -87,6 +91,7 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
     public void onTraversalDone(Integer sum) {
         out.println("Processed " + nProcessedLoci + " variants.");
         out.println("\t SNPs: " + nSNPs);
+        out.println("\t VQSLOD Threshold passing SNPs: " + passedSNPs);
         out.println("\t INDELs: " + (nInsertions + nDeletions + nComplex));
         out.println("\t\t (INDEL) Simple Insertions: " + nInsertions);
         out.println("\t\t (INDEL) Simple Deletions: " + nDeletions);
@@ -103,6 +108,7 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
         // initialize counters;
         nProcessedLoci = 0;
         nSNPs = 0;
+        passedSNPs = 0;
         nInsertions = 0;
         nDeletions = 0;
         nComplex = 0;
@@ -207,6 +213,14 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
 
         String site_filter = getVariantFilterString(vc);
         String vqslod = getVQSLODString(vc);
+
+        double VQSLOD = Double.parseDouble(vqslod);
+
+        if ( !(VQSLOD > vqslodThreshold) ) {
+            return;
+        }
+
+        passedSNPs++;
 
         HashMap<String, String> gt_counts = collectGenotypeMetrics(vc);
 
