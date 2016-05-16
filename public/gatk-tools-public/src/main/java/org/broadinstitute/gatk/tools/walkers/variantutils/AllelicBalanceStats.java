@@ -199,6 +199,27 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
         }
     }
 
+    public boolean acceptableVariant(VariantContext vc) {
+        String site_filter = getVariantFilterString(vc);
+        String vqslod = getVQSLODString(vc);
+
+        if ( site_filter.equals("LowQual") ) {
+            return false;
+        }
+
+        if ( vqslod.equals("NA") ) {
+            errorVariant(vc, "Trouble parsing VQSLOD");
+        }
+
+        double VQSLOD = Double.parseDouble(vqslod);
+
+        if ( !(VQSLOD > vqslodThreshold) ) {
+            return false;
+        }
+
+        return true;
+    }
+
     public void recordSNP(VariantContext vc) {
         int transition, transversion;
 
@@ -211,16 +232,17 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
             transversion = 1;
         }
 
-        String site_filter = getVariantFilterString(vc);
-        String vqslod = getVQSLODString(vc);
 
-        double VQSLOD = Double.parseDouble(vqslod);
+        boolean acceptable = acceptableVariant(vc);
 
-        if ( !(VQSLOD > vqslodThreshold) ) {
+        if ( ! acceptable ) {
             return;
         }
 
         passedSNPs++;
+
+        String site_filter = getVariantFilterString(vc);
+        String vqslod = getVQSLODString(vc);
 
         HashMap<String, String> gt_counts = collectGenotypeMetrics(vc);
 
