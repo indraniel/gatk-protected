@@ -135,6 +135,7 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
                 "VQSLOD",
                 "TRANSITION",
                 "TRANSVERSION",
+                "OLD_MULTIALLELIC",
 
                 "GENOTYPE_00_SAMPLE_CNT",
                 "GENOTYPE_00_REF_ALLELE",
@@ -256,6 +257,8 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
                 vqslod,
                 String.format("%d", transition),
                 String.format("%d", transversion),
+
+                gt_counts.get("OLD_MULTIALLELIC"),
 
                 gt_counts.get("gt_00_sample_cnt"),
                 gt_counts.get("gt_00_ref_allele"),
@@ -399,7 +402,14 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
         hmap.put("gt_nocall_sample_cnt", String.format("%d", gt_nocall_sample_cnt));
         hmap.put("gt_mixed_sample_cnt", String.format("%d", gt_mixed_sample_cnt));
 
+        hmap.put("OLD_MULTIALLELIC", getOldMultiAllelicAttribute(vc));
+
         return hmap;
+    }
+
+    public String getOldMultiAllelicAttribute(VariantContext vc) {
+        String oldMultiAllelicAttr = vc.getAttribute("OLD_MULTIALLELIC", "NA").toString();
+        return oldMultiAllelicAttr;
     }
 
     public void errorVariant(VariantContext vc, String msg) {
