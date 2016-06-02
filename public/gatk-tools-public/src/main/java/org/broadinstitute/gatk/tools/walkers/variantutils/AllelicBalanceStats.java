@@ -287,17 +287,17 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
         int gt_00_sample_cnt = 0;
         int gt_00_ref_allele = 0;
         int gt_00_alt_allele = 0;
-        float gt_00_allele_bal = (float) 0.0;
+        float gt_00_allele_bal = (float) -1.0;
 
         int gt_01_sample_cnt = 0;
         int gt_01_ref_allele = 0;
         int gt_01_alt_allele = 0;
-        float gt_01_allele_bal = (float) 0.0;
+        float gt_01_allele_bal = (float) -1.0;
 
         int gt_11_sample_cnt = 0;
         int gt_11_ref_allele = 0;
         int gt_11_alt_allele = 0;
-        float gt_11_allele_bal = (float) 0.0;
+        float gt_11_allele_bal = (float) -1.0;
 
         int gt_nocall_sample_cnt = 0;
 
@@ -363,19 +363,37 @@ public class AllelicBalanceStats extends RodWalker<Integer, Integer> {
         hmap.put("gt_00_sample_cnt", String.format("%d", gt_00_sample_cnt));
         hmap.put("gt_00_ref_allele", String.format("%d", gt_00_ref_allele));
         hmap.put("gt_00_alt_allele", String.format("%d", gt_00_alt_allele));
-        hmap.put("gt_00_allele_bal", String.format("%.4f", gt_00_allele_bal));
+
+        if (gt_00_allele_bal == -1.0) {
+            hmap.put("gt_00_allele_bal", String.format("%s", "NA"));
+        }
+        else {
+            hmap.put("gt_00_allele_bal", String.format("%.4f", gt_00_allele_bal));
+        }
         hmap.put("gt_00_total_depth", String.format("%d", gt_00_ref_allele + gt_00_alt_allele));
 
         hmap.put("gt_01_sample_cnt", String.format("%d", gt_01_sample_cnt));
         hmap.put("gt_01_ref_allele", String.format("%d", gt_01_ref_allele));
         hmap.put("gt_01_alt_allele", String.format("%d", gt_01_alt_allele));
-        hmap.put("gt_01_allele_bal", String.format("%.4f", gt_01_allele_bal));
+
+        if (gt_01_allele_bal == -1.0) {
+            hmap.put("gt_01_allele_bal", String.format("%s", "NA"));
+        }
+        else {
+            hmap.put("gt_01_allele_bal", String.format("%.4f", gt_01_allele_bal));
+        }
         hmap.put("gt_01_total_depth", String.format("%d", gt_01_ref_allele + gt_01_alt_allele));
 
         hmap.put("gt_11_sample_cnt", String.format("%d", gt_11_sample_cnt));
         hmap.put("gt_11_ref_allele", String.format("%d", gt_11_ref_allele));
         hmap.put("gt_11_alt_allele", String.format("%d", gt_11_alt_allele));
-        hmap.put("gt_11_allele_bal", String.format("%.4f", gt_11_allele_bal));
+
+        if (gt_11_allele_bal == -1.0) {
+            hmap.put("gt_11_allele_bal", String.format("%s", "NA"));
+        }
+        else {
+            hmap.put("gt_11_allele_bal", String.format("%.4f", gt_11_allele_bal));
+        }
         hmap.put("gt_11_total_depth", String.format("%d", gt_11_ref_allele + gt_11_alt_allele));
 
         hmap.put("gt_nocall_sample_cnt", String.format("%d", gt_nocall_sample_cnt));
