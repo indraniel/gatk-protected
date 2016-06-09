@@ -107,6 +107,12 @@ public class GATKVCFHeaderLines {
         addFormatLine(new VCFFormatHeaderLine(GATKVCFConstants.OXOG_FRACTION_KEY, 1, VCFHeaderLineType.Float, "Fraction of alt reads indicating OxoG error"));
 
 
+        addInfoLine(new VCFInfoHeaderLine(AB_SNP_HET_REF_ALLELE_COUNT, 1, VCFHeaderLineType.Integer, "Reference Allele Count for heterozygous SNP calls"));
+        addInfoLine(new VCFInfoHeaderLine(AB_SNP_HET_ALT_ALLELE_COUNT, 1, VCFHeaderLineType.Integer, "Alternate Allele Count for heterozygous SNP calls"));
+        addInfoLine(new VCFInfoHeaderLine(AB_SNP_HET_TOTAL_ALLELE_COUNT, 1, VCFHeaderLineType.Integer, "Total Depth Count for heterozygous SNP calls"));
+        addInfoLine(new VCFInfoHeaderLine(AB_SNP_HET_RATIO, 1, VCFHeaderLineType.Float, "Site Allele Balance Ratio for heterozygous SNP calls (ref/(ref+alt))"));
+        addInfoLine(new VCFInfoHeaderLine(AB_SNP_HET_SAMPLE_COUNT, 1, VCFHeaderLineType.Integer, "Total Sample Count for heterozygous genotype SNP calls"));
+
         addInfoLine(new VCFInfoHeaderLine(MLE_ALLELE_COUNT_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Integer, "Maximum likelihood expectation (MLE) for the allele counts (not necessarily the same as the AC), for each ALT allele, in the same order as listed"));
         addInfoLine(new VCFInfoHeaderLine(MLE_ALLELE_FREQUENCY_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Float, "Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed"));
         addInfoLine(new VCFInfoHeaderLine(DOWNSAMPLED_KEY, 0, VCFHeaderLineType.Flag, "Were any of the samples downsampled?"));

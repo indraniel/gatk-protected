@@ -38,6 +38,13 @@ public final class GATKVCFConstants {
     public static final String RAW_RMS_MAPPING_QUALITY_KEY =        "RAW_MQ";
     public static final String AS_RMS_MAPPING_QUALITY_KEY =         "AS_MQ";
     public static final String AS_RAW_RMS_MAPPING_QUALITY_KEY =     "AS_RAW_MQ";
+
+    public static final String AB_SNP_HET_REF_ALLELE_COUNT =        "ABHetRefCnt";
+    public static final String AB_SNP_HET_ALT_ALLELE_COUNT =        "ABHetAltCnt";
+    public static final String AB_SNP_HET_TOTAL_ALLELE_COUNT =      "ABHetTotCnt";
+    public static final String AB_SNP_HET_RATIO =                   "ABHetRatio";
+    public static final String AB_SNP_HET_SAMPLE_COUNT =            "ABHetSmplCnt";
+
     public static final String ALLELE_BALANCE_HET_KEY =             "ABHet";
     public static final String ALLELE_BALANCE_HOM_KEY =             "ABHom";
     public static final String ORIGINAL_AC_KEY =                    "AC_Orig"; //SelectVariants
