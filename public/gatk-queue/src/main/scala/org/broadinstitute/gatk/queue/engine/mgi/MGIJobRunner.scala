@@ -29,7 +29,6 @@ import org.broadinstitute.gatk.queue.QException
 import org.broadinstitute.gatk.queue.util.{Logging,Retry}
 import org.broadinstitute.gatk.queue.function.CommandLineFunction
 import org.broadinstitute.gatk.queue.engine.{RunnerStatus, CommandLineJobRunner}
-import org.ggf.drmaa._
 
 import scala.sys.process._
 import java.io._
@@ -38,7 +37,7 @@ import java.util.{Date, Collections}
 /**
  * Runs jobs using DRMAA.
  */
-class MGIJobRunner(val session: Session, val function: CommandLineFunction) extends CommandLineJobRunner with Logging {
+class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunner with Logging {
   /** Job Id of the currently executing job. */
   var jobId: String = _
   override def jobIdString = jobId
@@ -83,79 +82,73 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
   }
 
   def start() {
-    session.synchronized {
-      // Instead of running the function.commandLine, run "/bin/bash <jobScript>"
-      val baseCmd : String = "/bin/bash"
-      val script : String = jobScript.toString
-      val cmd : String = Array(baseCmd, script).mkString(" ")
-      logger.info("Base command is: %s".format(cmd))
+    // Instead of running the function.commandLine, run "/bin/bash <jobScript>"
+    val baseCmd : String = "/bin/bash"
+    val script : String = jobScript.toString
+    val cmd : String = Array(baseCmd, script).mkString(" ")
+    logger.info("Base command is: %s".format(cmd))
 
-      val (exitCode, stdOut, stdErr) = bsub(cmd)
+    val (exitCode, stdOut, stdErr) = bsub(cmd)
 
-      if (exitCode != 0) {
-        throw new QException("Unable to submit job (BSUB error): " + stdErr)
-      } else {
-        logger.info("Successfully Invoked BSUB: " + stdOut)
+    if (exitCode != 0) {
+      throw new QException("Unable to submit job (BSUB error): " + stdErr)
+    } else {
+      logger.info("Successfully Invoked BSUB: " + stdOut)
 
-        // store the id so it can be killed in tryStop
-        val regex = "Job <([0-9]+)> .+".r
-        val regex(jobNum) = stdOut.trim()
-        jobId = jobNum
+      // store the id so it can be killed in tryStop
+      val regex = "Job <([0-9]+)> .+".r
+      val regex(jobNum) = stdOut.trim()
+      jobId = jobNum
 
-        logger.info("Submitted job id: " + jobId)
-      }
-
-      updateStatus(RunnerStatus.RUNNING)
+      logger.info("Submitted job id: " + jobId)
     }
+
+    updateStatus(RunnerStatus.RUNNING)
   }
 
   def updateJobStatus() = {
-    session.synchronized {
-      var returnStatus: RunnerStatus.Value = null
+    var returnStatus: RunnerStatus.Value = null
 
-      try {
-          val lsfStatus = getLSFCacheJobStatus(jobId)
-          lsfStatus match {
-            case "DONE" => returnStatus = RunnerStatus.DONE
-            case "EXIT" => returnStatus = RunnerStatus.FAILED
-            case "RUN"  => returnStatus = RunnerStatus.RUNNING
-            case "PEND" => returnStatus = RunnerStatus.PENDING
-            case _ => returnStatus = RunnerStatus.FAILED  /* when in an unknown state, just fail */
-          }
-      } catch {
-        // getJobProgramStatus will throw an exception once wait has run, as the
-        // job will be reaped.  If the status is currently DONE or FAILED, return
-        // the status.
-        case de: Exception =>
-          if (lastStatus == RunnerStatus.DONE || lastStatus == RunnerStatus.FAILED)
-            returnStatus = lastStatus
-          else
-            logger.warn("Unable to determine status of job id " + jobId, de)
-      }
+    try {
+        val lsfStatus = getLSFCacheJobStatus(jobId)
+        logger.info("LSF Job ID: " + jobId + " currently has status: " + lsfStatus)
+        lsfStatus match {
+          case "DONE" => returnStatus = RunnerStatus.DONE
+          case "EXIT" => returnStatus = RunnerStatus.FAILED
+          case "RUN"  => returnStatus = RunnerStatus.RUNNING
+          case "PEND" => returnStatus = RunnerStatus.PENDING
+          case _ => returnStatus = RunnerStatus.FAILED  /* when in an unknown state, just fail */
+        }
+    } catch {
+      // getJobProgramStatus will throw an exception once wait has run, as the
+      // job will be reaped.  If the status is currently DONE or FAILED, return
+      // the status.
+      case de: Exception =>
+        if (lastStatus == RunnerStatus.DONE || lastStatus == RunnerStatus.FAILED)
+          returnStatus = lastStatus
+        else
+          logger.warn("Unable to determine status of job id " + jobId, de)
+    }
 
-      if (returnStatus != null) {
-        updateStatus(returnStatus)
-        true
-      } else {
-        false
-      }
+    if (returnStatus != null) {
+      updateStatus(returnStatus)
+      true
+    } else {
+      false
     }
   }
 
   def tryStop() {
-    session.synchronized {
-      // Assumes that after being set the job may be
-      // reassigned but will not be reset back to null
-      if (jobId != null) {
-        try {
-          // Stop runners. SIGTERM(15) is preferred to SIGKILL(9).
-          // Only way to send SIGTERM is for the Sys Admin set the terminate_method
-          // resource of the designated queue to SIGTERM
-          session.control(jobId, Session.TERMINATE)
-        } catch {
-          case e: Exception =>
-            logger.error("Unable to kill job " + jobId, e)
-        }
+    // Assumes that after being set the job may be
+    // reassigned but will not be reset back to null
+    if (jobId != null) {
+      try {
+        val (exitCode, stdOut, stdErr) = bkill(jobId)
+        if (exitCode != 0)
+          throw new RuntimeException("Could not bkill jobId: " + jobId)
+      } catch {
+        case e: Exception =>
+          logger.error("Unable to kill job " + jobId, e)
       }
     }
   }
@@ -184,6 +177,13 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
     logger.info("(bsub): %s".format(bsubCmd))
     val (exitValue, stdOut, stdErr) = runCmd(bsubCmd)
     (exitValue, stdOut, stdErr)
+  }
+
+  def bkill(jobID: String): (Int, String, String) = {
+    val bkillCmd = Array("bkill", jobID).mkString(" ")
+    logger.info("(bkill): %s".format(bkillCmd))
+    val (exitValue, stdOut, stdErr) = runCmd(bkillCmd)
+    (exitValue, stdOut.trim(), stdErr.trim())
   }
 
   def runCmd(cmd: String): (Int, String, String) = {

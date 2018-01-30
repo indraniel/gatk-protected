@@ -28,28 +28,15 @@ package org.broadinstitute.gatk.queue.engine.mgi
 import org.broadinstitute.gatk.queue.function.CommandLineFunction
 import org.broadinstitute.gatk.queue.engine.CommandLineJobManager
 import org.broadinstitute.gatk.utils.jna.drmaa.v1_0.JnaSessionFactory
-import org.ggf.drmaa.Session
 
 /**
  * Runs job using bsub command line, but monitor with existing DRMAA
  */
 class MGIJobManager extends CommandLineJobManager[MGIJobRunner] {
-  protected var session: Session = _
-
-  protected def newSession() = new JnaSessionFactory().getSession
   protected def contact = null
 
-  override def init() {
-    session = newSession()
-    session.init(contact)
-  }
-
-  override def exit() {
-    session.exit()
-  }
-
   def runnerType = classOf[MGIJobRunner]
-  def create(function: CommandLineFunction) = new MGIJobRunner(session, function)
+  def create(function: CommandLineFunction) = new MGIJobRunner(function)
 
   override def updateStatus(runners: Set[MGIJobRunner]) = {
     var updatedRunners = Set.empty[MGIJobRunner]
