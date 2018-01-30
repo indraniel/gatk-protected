@@ -114,25 +114,19 @@ class MGIJobRunner(val session: Session, val function: CommandLineFunction) exte
       var returnStatus: RunnerStatus.Value = null
 
       try {
-        val jobStatus = session.getJobProgramStatus(jobId);
-        jobStatus match {
-          case Session.QUEUED_ACTIVE => returnStatus = RunnerStatus.RUNNING
-          case Session.DONE =>
-            val lsfStatus = getLSFCacheJobStatus(jobId)
-            lsfStatus match {
-              case "DONE" => returnStatus = RunnerStatus.DONE
-              case "EXIT" => returnStatus = RunnerStatus.FAILED
-              case _ => returnStatus = RunnerStatus.FAILED  /* when in an unknown state, just fail */
-            }
-          case Session.FAILED => returnStatus = RunnerStatus.FAILED
-          case Session.UNDETERMINED => logger.warn("Unable to determine status of job id " + jobId)
-          case _ => returnStatus = RunnerStatus.RUNNING
-        }
+          val lsfStatus = getLSFCacheJobStatus(jobId)
+          lsfStatus match {
+            case "DONE" => returnStatus = RunnerStatus.DONE
+            case "EXIT" => returnStatus = RunnerStatus.FAILED
+            case "RUN"  => returnStatus = RunnerStatus.RUNNING
+            case "PEND" => returnStatus = RunnerStatus.PENDING
+            case _ => returnStatus = RunnerStatus.FAILED  /* when in an unknown state, just fail */
+          }
       } catch {
         // getJobProgramStatus will throw an exception once wait has run, as the
         // job will be reaped.  If the status is currently DONE or FAILED, return
         // the status.
-        case de: DrmaaException =>
+        case de: Exception =>
           if (lastStatus == RunnerStatus.DONE || lastStatus == RunnerStatus.FAILED)
             returnStatus = lastStatus
           else
