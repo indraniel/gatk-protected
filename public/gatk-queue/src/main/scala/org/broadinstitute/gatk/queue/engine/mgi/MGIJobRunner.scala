@@ -103,7 +103,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
       logger.info("Submitted job id: " + jobId)
     }
 
-    updateStatus(RunnerStatus.RUNNING)
+    updateStatus(RunnerStatus.PENDING)
   }
 
   def updateJobStatus() = {
