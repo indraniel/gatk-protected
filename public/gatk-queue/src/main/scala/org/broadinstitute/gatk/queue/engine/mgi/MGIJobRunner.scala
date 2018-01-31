@@ -183,6 +183,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
     val bkillCmd = Array("bkill", jobID).mkString(" ")
     logger.info("(bkill): %s".format(bkillCmd))
     val (exitValue, stdOut, stdErr) = runCmd(bkillCmd)
+    Thread.sleep(5000) // sleep for 5 seconds (5000 milliseconds)
     (exitValue, stdOut.trim(), stdErr.trim())
   }
 
