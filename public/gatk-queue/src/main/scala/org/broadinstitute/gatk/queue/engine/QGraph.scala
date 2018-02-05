@@ -437,17 +437,19 @@ class QGraph extends Logging {
         def startJobs: Boolean = {
 
           def canRunMoreConcurrentJobs: Boolean = {
+            val maxJobsThreshold = settings.maximumNumberOfConcurrentJobs.getOrElse(100)
             val msg = "-- Pend: %d | Run : %d | Total: %d | MaxJobsThreshold: %d --".format(
               statusCounts.pending,
               statusCounts.running,
               statusCounts.pending + statusCounts.running,
-              settings.maximumNumberOfConcurrentJobs.get)
+              maxJobsThreshold)
             logger.info(msg)
 
-            if(settings.maximumNumberOfConcurrentJobs.isDefined)
-              statusCounts.pending + statusCounts.running < settings.maximumNumberOfConcurrentJobs.get
-            else
-              true
+            statusCounts.pending + statusCounts.running < maxJobsThreshold 
+            //if(settings.maximumNumberOfConcurrentJobs.isDefined)
+            //  statusCounts.pending + statusCounts.running < settings.maximumNumberOfConcurrentJobs.get
+            //else
+            //  true
           }
 
           running && readyJobs.size > 0 &&
