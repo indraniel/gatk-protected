@@ -111,7 +111,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
 
     try {
         val lsfStatus = getLSFCacheJobStatus(jobId)
-        logger.info("LSF Job ID: " + jobId + " currently has status: " + lsfStatus)
+        logger.debug("LSF Job ID: " + jobId + " currently has status: " + lsfStatus)
         lsfStatus match {
           case "DONE" => returnStatus = RunnerStatus.DONE
           case "EXIT" => returnStatus = RunnerStatus.FAILED
@@ -167,7 +167,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
 
   def bjobs(jobID: String): (Int, String, String) = {
     val bjobsCmd = Array("bjobs", jobID).mkString(" ")
-    logger.info("(bjobs): %s".format(bjobsCmd))
+    logger.debug("(bjobs): %s".format(bjobsCmd))
     val (exitValue, stdOut, stdErr) = runCmd(bjobsCmd)
     (exitValue, stdOut.trim(), stdErr.trim())
   }
@@ -181,7 +181,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
 
   def bkill(jobID: String): (Int, String, String) = {
     val bkillCmd = Array("bkill", jobID).mkString(" ")
-    logger.info("(bkill): %s".format(bkillCmd))
+    logger.debug("(bkill): %s".format(bkillCmd))
     val (exitValue, stdOut, stdErr) = runCmd(bkillCmd)
     Thread.sleep(5000) // sleep for 5 seconds (5000 milliseconds)
     (exitValue, stdOut.trim(), stdErr.trim())
