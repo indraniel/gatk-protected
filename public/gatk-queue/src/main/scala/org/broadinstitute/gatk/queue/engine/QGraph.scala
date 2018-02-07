@@ -428,6 +428,15 @@ class QGraph extends Logging {
       var logNextStatusCounts = true
       var startedJobsToEmail = Set.empty[FunctionEdge]
 
+      var msg = "==> readyJobs: %d".format(readyJobs.size)
+      logger.info(msg)
+
+      msg = "==> sPending: %d".format(statusCounts.pending)
+      logger.info(msg)
+
+      msg = "==> Entering run job while loop"
+      logger.info(msg)
+
       while (running && readyJobs.size + runningJobs.size > 0) {
 
         var startedJobs = Set.empty[FunctionEdge]
@@ -438,6 +447,8 @@ class QGraph extends Logging {
 
           def canRunMoreConcurrentJobs: Boolean = {
             val maxJobs = settings.maximumNumberOfConcurrentJobs.getOrElse(10)
+            val msg = "====> (4) runningJobs: %d | startedJobs: %d".format(runningJobs.size, startedJobs.size)
+            logger.info(msg)
             runningJobs.size + startedJobs.size < maxJobs
           }
 
@@ -446,7 +457,14 @@ class QGraph extends Logging {
             canRunMoreConcurrentJobs
         }
 
+        if (startJobs) {
+          msg = "===> entering startJobs loop"
+          logger.info(msg)
+        }
+
         while (startJobs) {
+          msg = "====> starting up a job"
+          logger.info(msg)
           val edge = readyJobs.head
           edge.runner = newRunner(edge.function)
           edge.start()
@@ -456,10 +474,21 @@ class QGraph extends Logging {
           logNextStatusCounts = true
         }
 
+        msg = "===> exited startJobs loop"
+        logger.info(msg)
+
         runningJobs ++= startedJobs
         startedJobsToEmail ++= startedJobs
         statusCounts.pending -= startedJobs.size
         statusCounts.running += startedJobs.size
+
+        msg = "===> readyJobs: %d | startedJobs: %d | runningJobs: %d | sPending: %d | sRunning: %d".format(
+          readyJobs.size,
+          startedJobs.size,
+          runningJobs.size,
+          statusCounts.pending,
+          statusCounts.running)
+        logger.info(msg)
 
         if (logNextStatusCounts)
           logStatusCounts()
@@ -484,6 +513,9 @@ class QGraph extends Logging {
 
         lastRunningCheck = System.currentTimeMillis
         updateStatus()
+
+        msg = "===> runningJobs: %d".format(runningJobs.size)
+        logger.info(msg)
 
         runningJobs.foreach(edge => edge.status match {
           case RunnerStatus.DONE => {
@@ -510,6 +542,18 @@ class QGraph extends Logging {
         statusCounts.done += doneJobs.size
         statusCounts.failed += failedJobs.size
 
+        msg = "===> (2) readyJobs: %d | startedJobs: %d | doneJobs: %d | failedJobs: %d | runningJobs: %d | sPending: %d | sRunning: %d | sDone: %d | sFailed: %d".format(
+          readyJobs.size,
+          startedJobs.size,
+          doneJobs.size,
+          failedJobs.size,
+          runningJobs.size,
+          statusCounts.pending,
+          statusCounts.running,
+          statusCounts.done,
+          statusCounts.failed)
+        logger.info(msg)
+
         if (doneJobs.size > 0 || failedJobs.size > 0)
           logNextStatusCounts = true
 
@@ -524,8 +568,16 @@ class QGraph extends Logging {
           writeJobsReport(plot = false)
         }
 
+        msg = "===> updating getReadyJobs"
+        logger.info(msg)
         readyJobs ++= getReadyJobs
+
+        msg = "===> (3) readyJobs: %d".format(readyJobs.size)
+        logger.info(msg)
       }
+
+      msg = "==> Exiting run job while loop"
+      logger.info(msg)
 
       logStatusCounts()
       deleteCleanup(-1)
