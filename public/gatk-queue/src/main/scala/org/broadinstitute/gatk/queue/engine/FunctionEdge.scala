@@ -118,13 +118,14 @@ class FunctionEdge(val function: QFunction, val inputs: QNode, val outputs: QNod
             try {
               runner.cleanup()
               //function.doneOutputs.foreach(_.createNewFile())
+              function.doneOutputs.foreach { f =>
+                logger.info("Creating file: %s".format(f))
+                f.createNewFile()
+              }
             } catch {
-              case _: Throwable => /* ignore errors in the done handler */
+              case e: Exception => logger.error(s"Exception caught: $e with creating .done file")
             }
-            function.doneOutputs.foreach { f =>
-              logger.info("Creating file: %s".format(f))
-              f.createNewFile()
-            }
+            logger.info("Pre-Done")
             logger.info("Done: " + function.description)
           }
         } catch {
