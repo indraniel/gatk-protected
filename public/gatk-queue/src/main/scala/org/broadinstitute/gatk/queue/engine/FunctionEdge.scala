@@ -27,6 +27,7 @@ package org.broadinstitute.gatk.queue.engine
 
 import org.broadinstitute.gatk.queue.function.QFunction
 import java.io.{StringWriter, PrintWriter}
+import java.nio.file.{Paths, Files}
 import org.broadinstitute.gatk.queue.util.Logging
 import org.broadinstitute.gatk.utils.io.IOUtils
 import org.apache.commons.io.FileUtils
@@ -125,7 +126,7 @@ class FunctionEdge(val function: QFunction, val inputs: QNode, val outputs: QNod
             } catch {
               case e: Exception => logger.error(s"Exception caught: $e with creating .done file")
             }
-            logger.info("Pre-Done")
+            ensureDoneFileCreated()
             logger.info("Done: " + function.description)
           }
         } catch {
@@ -144,6 +145,20 @@ class FunctionEdge(val function: QFunction, val inputs: QNode, val outputs: QNod
     }
 
     currentStatus
+  }
+
+  def ensureDoneFileCreated() {
+    function.doneOutputs.foreach { f =>
+      if (Files.exists(f.toPath())) {
+        logger.info("Done file double-check success : %s".format(f))
+      } else {
+        logger.info("Done file double-check fail : %s".format(f))
+        logger.info("Re-attempting")
+        Thread.sleep(2000) // sleep for 2 seconds (2000 milliseconds)
+        Files.createFile(f.toPath());
+        Thread.sleep(2000) // sleep for 2 seconds (2000 milliseconds)
+      }
+    }
   }
 
   /**
