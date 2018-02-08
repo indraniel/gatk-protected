@@ -117,7 +117,11 @@ class FunctionEdge(val function: QFunction, val inputs: QNode, val outputs: QNod
           } else if (currentStatus == RunnerStatus.DONE) {
             try {
               runner.cleanup()
-              function.doneOutputs.foreach(_.createNewFile())
+              //function.doneOutputs.foreach(_.createNewFile())
+              function.doneOutputs.foreach { f =>
+                logger.info("Creating file: %s".format(f))
+                f.createNewFile()
+              }
             } catch {
               case _: Throwable => /* ignore errors in the done handler */
             }
