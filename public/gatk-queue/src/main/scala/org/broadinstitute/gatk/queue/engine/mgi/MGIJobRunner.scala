@@ -103,7 +103,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
       logger.info("Submitted job id: " + jobId)
     }
 
-    updateStatus(RunnerStatus.PENDING)
+    updateStatus(RunnerStatus.RUNNING)
   }
 
   def updateJobStatus() = {
@@ -116,7 +116,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
           case "DONE" => returnStatus = RunnerStatus.DONE
           case "EXIT" => returnStatus = RunnerStatus.FAILED
           case "RUN"  => returnStatus = RunnerStatus.RUNNING
-          case "PEND" => returnStatus = RunnerStatus.PENDING
+          case "PEND" => returnStatus = RunnerStatus.RUNNING
           case _ => returnStatus = RunnerStatus.FAILED  /* when in an unknown state, just fail */
         }
     } catch {
