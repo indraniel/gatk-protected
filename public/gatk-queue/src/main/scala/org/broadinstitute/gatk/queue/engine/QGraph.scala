@@ -527,7 +527,6 @@ class QGraph extends Logging {
             messengers.foreach(_.exit(jobShortName(edge.function), edge.function.jobErrorLines.mkString("%n".format())))
           }
           case RunnerStatus.RUNNING => /* do nothing while still running */
-          case RunnerStatus.PENDING => /* do nothing while still pending */
         })
 
         runningJobs --= doneJobs
