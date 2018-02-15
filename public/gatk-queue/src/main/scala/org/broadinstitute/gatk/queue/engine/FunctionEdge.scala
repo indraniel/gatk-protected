@@ -145,7 +145,7 @@ class FunctionEdge(val function: QFunction, val inputs: QNode, val outputs: QNod
       }
     }
 
-    logger.info("The current status is: " + currentStatus)
+    logger.debug("The current status is: " + currentStatus)
     currentStatus
   }
 

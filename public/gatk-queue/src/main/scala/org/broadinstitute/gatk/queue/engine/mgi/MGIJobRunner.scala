@@ -167,7 +167,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
 
   def bjobs(jobID: String): (Int, String, String) = {
     val bjobsCmd = Array("bjobs", jobID).mkString(" ")
-    logger.info("(bjobs): %s".format(bjobsCmd))
+    logger.debug("(bjobs): %s".format(bjobsCmd))
     val (exitValue, stdOut, stdErr) = runCmd(bjobsCmd)
     (exitValue, stdOut.trim(), stdErr.trim())
   }
