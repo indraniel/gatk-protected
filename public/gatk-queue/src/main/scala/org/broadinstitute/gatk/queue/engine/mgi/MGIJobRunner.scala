@@ -156,11 +156,37 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
   def getLSFCacheJobStatus(jobID: String): String = {
     val (exitValue, stdOut, stdErr) = bjobs(jobID)
     var status: String = ""
-    if (stdErr != "") {
+
+    var attempt = 1
+    val maxTries = 3
+
+    val sleepTimeMiliSecs = 10000
+    val sleepTimeSecs = 10
+
+    var lastExitValue = exitValue
+    var lastStdOut = stdOut
+    var lastStdErr = stdErr
+
+    while (lastStdErr != "" && (attempt < maxTries)) {
+      var msg = "LSF Job: %s -- bjobs had trouble running.  Sleeping for %d seconds (%d of %d attempts)".format(
+        jobID,
+        sleepTimeSecs,
+        attempt,
+        maxTries)
+      logger.info(msg)
+      Thread.sleep(sleepTimeMiliSecs)
+      attempt += 1
+      val (retryExitValue, retryStdOut, retryStdErr) = bjobs(jobID)
+      lastExitValue = retryExitValue
+      lastStdOut = retryStdOut
+      lastStdErr = retryStdErr
+    }
+
+    if (lastStdErr != "") {
       logger.info("LSF Job: %s -- status not in LSF cache".format(jobID))
       status = "unknown"
     } else {
-      status = stdOut.toString.split("\n")(1).split("\\s+")(2)
+      status = lastStdOut.toString.split("\n")(1).split("\\s+")(2)
     }
     status
   }
