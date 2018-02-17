@@ -183,7 +183,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
     }
 
     if (lastStdErr != "") {
-      logger.info("LSF Job: %s -- status not in LSF cache".format(jobID))
+      logger.info("LSF Job: %s -- status not in LSF cache: %s".format(jobID, lastStdErr))
       status = "unknown"
     } else {
       status = lastStdOut.toString.split("\n")(1).split("\\s+")(2)
