@@ -158,7 +158,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
     var status: String = ""
 
     var attempt = 1
-    val maxTries = 3
+    val maxTries = 6
 
     val sleepTimeMiliSecs = 10000
     val sleepTimeSecs = 10
