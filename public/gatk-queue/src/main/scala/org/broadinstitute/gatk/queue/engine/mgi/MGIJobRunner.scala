@@ -153,6 +153,41 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
     }
   }
 
+  def bsubWithRetry(cmd: String): (Int, String, String) = {
+    val (exitValue, stdOut, stdErr) = bsub(cmd)
+    var status: String = ""
+
+    var attempt = 1
+    val maxTries = 6
+
+    val sleepTimeMiliSecs = 10000
+    val sleepTimeSecs = 10
+
+    var lastExitValue = exitValue
+    var lastStdOut = stdOut
+    var lastStdErr = stdErr
+
+    while (lastStdErr != "" && (attempt < maxTries)) {
+      var msg = "bsub had trouble executing.  Sleeping for %d seconds (%d of %d attempts)".format(
+        sleepTimeSecs,
+        attempt,
+        maxTries)
+      logger.info(msg)
+      Thread.sleep(sleepTimeMiliSecs)
+      attempt += 1
+      val (retryExitValue, retryStdOut, retryStdErr) = bsub(cmd)
+      lastExitValue = retryExitValue
+      lastStdOut = retryStdOut
+      lastStdErr = retryStdErr
+    }
+
+    if (lastStdErr != "") {
+      logger.info("Overall BSUB failure (%d of %d attempts)".format(maxTries, maxTries))
+    }
+
+    (lastExitValue, lastStdOut, lastStdErr)
+  }
+
   def getLSFCacheJobStatus(jobID: String): String = {
     val (exitValue, stdOut, stdErr) = bjobs(jobID)
     var status: String = ""
