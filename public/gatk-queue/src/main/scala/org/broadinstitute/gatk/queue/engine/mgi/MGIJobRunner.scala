@@ -88,7 +88,7 @@ class MGIJobRunner(val function: CommandLineFunction) extends CommandLineJobRunn
     val cmd : String = Array(baseCmd, script).mkString(" ")
     logger.info("Base command is: %s".format(cmd))
 
-    val (exitCode, stdOut, stdErr) = bsub(cmd)
+    val (exitCode, stdOut, stdErr) = bsubWithRetry(cmd)
 
     if (exitCode != 0) {
       throw new QException("Unable to submit job (BSUB error): " + stdErr)
